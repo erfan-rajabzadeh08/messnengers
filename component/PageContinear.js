@@ -12,7 +12,7 @@ continear:{
 paddingHorizontal:12,
 paddingVertical:15,
 flex:1,
-color:"#fff"
+Color:"#fff"
 }
 
 

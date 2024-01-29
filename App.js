@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import Appnavigator from './navigaton/Appnavigator';
 import { Provider } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 
  LogBox.ignoreLogs(['AsyncStorge has been extracted'])
 //AsyncStorage.clear()
@@ -28,9 +29,11 @@ import { Provider } from 'react-redux';
 },[])
 
 return (
-  <Provider store={store}>
-  <SafeAreaProvider>
-<Appnavigator />
+<Provider store={store}>
+<SafeAreaProvider>
+  <MenuProvider>
+   <Appnavigator />
+  </MenuProvider>
 </SafeAreaProvider>
 </Provider>
 )};

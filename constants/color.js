@@ -5,6 +5,8 @@ export default{
     gray:"#7f8c8d",
     primry:"#32d48e",
     textcolor:"#1c1e21",
-    red:"#e74c3c"
+    red:"#e74c3c",
+    extraLightGrey:"#ededed",
+    beige:'#fef5c3'
 
 }

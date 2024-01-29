@@ -9,9 +9,12 @@ import { updatesignedInUserData } from "../utlis/authAction";
 import { useDispatch } from "react-redux";
 import { updateLoggedInUserData } from "../store/authSlice";
 const ProfileImage=props=> {
+  const dispatch=useDispatch()
+
   const[image,setimage]=useState(imagesuser)
   const userId = props.userId;
-  const dispatch=useDispatch()
+
+  const showeditbutton=props.showeditbutton && props.showeditbutton===true;
 
  const onSelectImage=async()=>{
   const permissionstatus= await androidcameraPermission()
@@ -61,19 +64,25 @@ const onGallery = async () => {
     console.error('Error selecting or uploading image:', error);
   }
 };
-
+const Container=showeditbutton ? TouchableOpacity : View;
 return(
-<TouchableOpacity onPress={onSelectImage}>
+<Container onPress={onSelectImage}>
  <View >
  <Image
  source={ image}
  style={{...styles.image,...{width:props.size,height:props.size}}}
   />
- <View style={styles.editimage}>
- <FontAwesome6 name={'pen'} size={13}/>
- </View>
- </View>
-  </TouchableOpacity>
+
+  {
+    showeditbutton &&
+    <View style={styles.editimage}>
+    <FontAwesome6 name={'pen'} size={13}/>
+    </View>
+  }
+  </View>
+
+
+  </Container>
     )
 }
 

@@ -1,31 +1,115 @@
 
-import React, { useCallback, useState } from 'react';
-import { View,Text,StyleSheet, Button, ImageBackground, TextInput, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View,Text,StyleSheet, Button, ImageBackground, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import  backgroundImage from "../images/droplet.jpeg"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { useSelector } from 'react-redux';
+import PageContuinear from '../component/PageContinear';
+ import Bubble from '../component/bubble';
+import { createchat, sendTextMessage } from '../utlis/chatactions';
 const Chatscreen = (props) => {
+
+    const[chatusers,setchatusers]=useState([])
     const [massegetext,setmassgetext]=useState("");
-    const sendmassage=useCallback(()=>{
-       setmassgetext("")
-    },[massegetext])
+    const [chatId,setchatId]=useState(props.route?.params?.chatId);
+    const [errorBannerText,setErrorBannerText]=useState("")
+
+    const userdata=useSelector(state=>state.auth.userdata);
+    const storedusers=useSelector(state=>state.users.storedusers );
+    const storedchats=useSelector(state=>state.chat.chatsdata)
+    const chatMessages=useSelector(state=>{
+    if(!chatId)return [];
+    const chatMessagesData=state.messages.messagesData[chatId]
+    if(!chatMessagesData)return[];
+    const messageList=[];
+    for(const key in chatMessagesData){
+        const message=chatMessagesData[key];
+        messageList.push({
+        key,
+        ...message
+        });
+    }
+
+    return messageList;
+    })
+
+    const chatdata=(chatId && storedchats[chatId]) || props.route?.params?.newchatdata
+    const getchattitelfromname=()=>{
+        const otheruserId=chatusers.find(uid =>uid !== userdata.userId)
+        const otheruserdata= storedusers[otheruserId]
+        return otheruserdata &&  `${otheruserdata.firstname} ${otheruserdata.lastname}`
+    }
+
+      useEffect(()=>{
+    props.navigation.setOptions({
+    headerTitle:getchattitelfromname()
+    })
+     setchatusers(chatdata.users)
+    },[chatusers])
+
+    const sendmassage=useCallback(async()=>{
+
+    try {
+    let id=chatId
+    if(!id){
+     id=await createchat(userdata.userId,props.route.params.newchatdata);
+     setchatId(id);
+    }
+
+   await sendTextMessage(chatId,userdata.userId,massegetext);
+
+
+    } catch (error) {
+    console.log(error);
+    setErrorBannerText("Message failed to send")
+    setTimeout(()=>setErrorBannerText(""),5000)
+    }
+
+
+
+    setmassgetext("")
+    },[massegetext,chatId])
     return (
         <SafeAreaView
     edges={['left','right','bottom']}
-         style={styles.container}
-        >
-            <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+    style={styles.container}>
+     <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+     <PageContuinear style={{backgroundColor:'transparent'}}>
+        {
+        !chatId && <Bubble text='this is a new chat. say hi!' type="System" />
+        }
+        {
+        errorBannerText !==""&&<Bubble text={errorBannerText} type="erorr" />
+        }
+        {
+        chatId &&
+        <FlatList
+        data={chatMessages}
+        renderItem={(itemdata)=>{
+        const message=itemdata.item;
 
-            </ImageBackground>
-            <View style={styles.inputContiner}>
+        const isOwnMessage=message.sentBy===userdata.userId
 
-   <TouchableOpacity style={styles.tachable} onPress={(console.log('prsee'))}>
+        const messageType=isOwnMessage ? "myMessage":"theirMessage"
+  
+        return <Bubble
+           type={messageType}
+           text={message.text}
+        />
+        }}
+        />
+        }
+     </PageContuinear>
+     </ImageBackground>
+     <View style={styles.inputContiner}>
+  <TouchableOpacity style={styles.tachable} onPress={(console.log('prsee'))}>
   <FontAwesome6 name={'plus'} size={24} color={"#3498d1"}  />
-   </TouchableOpacity>
+  </TouchableOpacity>
 
-     <TextInput style={styles.textbox}
-      onChangeText={text=>setmassgetext(text)}
-      onSubmitEditing={sendmassage}
+  <TextInput style={styles.textbox}
+    onChangeText={text=>setmassgetext(text)}
+    onSubmitEditing={sendmassage}
     value={massegetext}/>
 
   {massegetext===("")&& <TouchableOpacity style={styles.tachable} onPress={(console.log('prsee'))}>

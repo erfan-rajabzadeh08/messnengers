@@ -5,7 +5,7 @@ import { View,Text,StyleSheet ,Button,  } from 'react-native';
 const Chatseting = (props) => {
     return (
         <View style={styles.container}>
-        <Text>erfan chat</Text>
+        <Text>erfan chatsssssssssss</Text>
         </View>
         );
         };
