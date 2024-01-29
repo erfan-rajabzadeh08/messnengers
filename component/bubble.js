@@ -6,6 +6,20 @@ import { Menu,MenuOption,MenuTrigger,MenuOptions} from "react-native-popup-menu"
 import Clipboard from '@react-native-clipboard/clipboard';
 import uuid from 'react-native-uuid'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { starMessage } from "../utlis/chatactions";
+import { useSelector } from "react-redux";
+
+function formatAmPm(dateString) {
+    const date=new Date(dateString)
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    return hours + ':' + minutes + ' ' + ampm;
+  }
+
 const Icon = FontAwesome6;
 const MenuItem=props=>{
     return <MenuOption onSelect={props.onSelect}>
@@ -18,15 +32,18 @@ const MenuItem=props=>{
     </MenuOption>
 }
 const Bubble=props=>{
-const {text,type}=props;
+const {text,type,messageId,chatId,userId,date}=props;
+const starredMessages=useSelector(state=>state.messages.starredMessages[chatId]??{})
+console.log(starredMessages);
 const bubblestyle={...styles.container}
 const wrapperstyle={...styles.wrapperstyle}
 const textstyle={...styles.text}
 const menuRef=useRef(null);
 const id=useRef(uuid.v4());
 
-
+const dateString=formatAmPm(date)
 let Container=View;
+let isUsermessage=false;
 switch (type) {
     case "system":
      textstyle.color='#65644a';
@@ -42,11 +59,13 @@ switch (type) {
         bubblestyle.backgroundColor='#e7fed6';
         bubblestyle.maxWidth='90%';
         Container=TouchableWithoutFeedback;
+        isUsermessage=true
     break;
     case "theirMessage":
         wrapperstyle.justifyContent='felx-start'
         bubblestyle.maxWidth='90%';
         Container=TouchableWithoutFeedback;
+        isUsermessage=true
     break;
 
     default:
@@ -56,6 +75,9 @@ const copyToClipboard =  text => {
  Clipboard.setString(text);
    };
 
+
+  const isStared=isUsermessage && starredMessages[messageId] !==undefined;
+
 return(
     <View style={wrapperstyle}>
       <Container onLongPress={()=>menuRef.current.props.ctx.menuActions.openMenu(id.current)} style={{with:'100%'}}>
@@ -64,11 +86,22 @@ return(
             {text}
         </Text>
 
+
+
+   {
+  dateString && <View style={styles.timeContinear}>
+        {isStared && <FontAwesome6 name='star-of-david' size={14} color='#000' style={{marginRight:7  }} />}
+    <Text style={styles.time}>{dateString}</Text>
+    </View>
+   }
+
+
+
     <Menu name={id.current} ref={menuRef}>
         <MenuTrigger/>
         <MenuOptions>
             <MenuItem text="Copy To Clipboard" icon={"copy"} onSelect={()=>copyToClipboard(text)}/>
-            <MenuItem text="Start message" icon={"star"} onSelect={()=>copyToClipboard(text)}/>
+            <MenuItem text={`${isStared ? 'Unstar':'Star'} message`} icon={ isStared ?"star":"star-of-david"} onSelect={()=>starMessage(messageId,chatId,userId)}/>
 
 
         </MenuOptions>
@@ -112,6 +145,14 @@ const styles=StyleSheet.create({
     },
     textmeun:{
     color:'#000'
+    },
+    timeContinear:{
+    flexDirection:'row',
+    justifyContent:'flex-end'
+    },
+    time:{
+      color:color.gray,
+      fontSize:13
     }
 
 

@@ -92,10 +92,15 @@ const Chatscreen = (props) => {
         const isOwnMessage=message.sentBy===userdata.userId
 
         const messageType=isOwnMessage ? "myMessage":"theirMessage"
-  
+
         return <Bubble
            type={messageType}
            text={message.text}
+           messageId={message.key}
+           userId={userdata.userId}
+           chatId={chatId}
+           date={message.sentAt}
+
         />
         }}
         />

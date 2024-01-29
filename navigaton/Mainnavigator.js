@@ -15,7 +15,7 @@ import { ActivityIndicator, View } from "react-native";
 import color from "../constants/color";
 import commonstyle from "../constants/commonstyle";
 import { setstoredusers } from "../store/userslice";
-import { setchatmessages } from "../store/messagesslic";
+import { setStarredMessages, setchatmessages } from "../store/messagesslic";
 
 
 
@@ -128,6 +128,17 @@ for (let i = 0; i < chatids.length; i++) {
 
 }
 })
+
+
+const userStarredMessagesRef=child(dbref,`userStarredMessages/${userdata.userId}`)
+refs.push(userStarredMessagesRef);
+onValue(userStarredMessagesRef,querysnapshot=>{
+const starredMessages=querysnapshot.val() ??{};
+dispatch(setStarredMessages({starredMessages}))
+})
+
+
+
 return ()=>{
   console.log("subscribing to firebase listener");
   refs.forEach(ref=>off(ref));
