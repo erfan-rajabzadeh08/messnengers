@@ -5,12 +5,15 @@ import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colo
 import { Menu,MenuOption,MenuTrigger,MenuOptions} from "react-native-popup-menu";
 import Clipboard from '@react-native-clipboard/clipboard';
 import uuid from 'react-native-uuid'
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+const Icon = FontAwesome6;
 const MenuItem=props=>{
     return <MenuOption onSelect={props.onSelect}>
     <View style={styles.menuItem}>
       <Text style={styles.textmeun}>
         {props.text}
       </Text>
+      <Icon name={props.icon} size={15} style={{marginLeft:8, color:"#000"}} />
     </View>
     </MenuOption>
 }
@@ -59,14 +62,13 @@ return(
       <View style={bubblestyle}>
         <Text style={textstyle}>
             {text}
-
         </Text>
 
     <Menu name={id.current} ref={menuRef}>
         <MenuTrigger/>
         <MenuOptions>
-            <MenuItem text="Copy To Clipboard" onSelect={()=>copyToClipboard(text)}/>
-            <MenuItem text="Start message" onSelect={()=>copyToClipboard(text)}/>
+            <MenuItem text="Copy To Clipboard" icon={"copy"} onSelect={()=>copyToClipboard(text)}/>
+            <MenuItem text="Start message" icon={"star"} onSelect={()=>copyToClipboard(text)}/>
 
 
         </MenuOptions>
@@ -104,10 +106,13 @@ const styles=StyleSheet.create({
         padding:5,
         flex:1,
         letterSpacing:0.3,
-        fontSize:16
+        fontSize:16,
+        borderRadius:3
 
     },
-    textmeun:{}
+    textmeun:{
+    color:'#000'
+    }
 
 
 })
