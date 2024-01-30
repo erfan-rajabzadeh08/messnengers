@@ -8,14 +8,14 @@ import { useSelector } from 'react-redux';
 import PageContuinear from '../component/PageContinear';
  import Bubble from '../component/bubble';
 import { createchat, sendTextMessage } from '../utlis/chatactions';
-import ReplyTo from '../component/Reply';
+import ReplyTo from '../component/ReplyTo';
 const Chatscreen = (props) => {
 
     const[chatusers,setchatusers]=useState([])
     const [massegetext,setmassgetext]=useState("");
     const [chatId,setchatId]=useState(props.route?.params?.chatId);
     const [errorBannerText,setErrorBannerText]=useState("")
-    const [replyingTo,setreplyingTo]=useState()
+    const [replyingTo,setReplyingTo]=useState()
     const userdata=useSelector(state=>state.auth.userdata);
     const storedusers=useSelector(state=>state.users.storedusers );
     const storedchats=useSelector(state=>state.chat.chatsdata)
@@ -70,7 +70,7 @@ const Chatscreen = (props) => {
 
 
     setmassgetext("");
-    setreplyingTo(null);
+    setReplyingTo(null);
     },[massegetext,chatId])
     return (
         <SafeAreaView
@@ -102,23 +102,24 @@ const Chatscreen = (props) => {
            userId={userdata.userId}
            chatId={chatId}
            date={message.sentAt}
-           setReply={()=>setreplyingTo(message)}
-           replyingTo={message.ReplyTo && chatMessages.find(i=>i.key === message.ReplyTo)}
+           setReply={() => setReplyingTo(message)}
+           replyingTo={message.replyTo && chatMessages.find(i=>i.key === message.replyTo)}
 
         />
-        }}
-        />
-        }
+    }}
+
+    />
+}
      </PageContuinear>
 
       {
         replyingTo &&
-        <ReplyTo text={replyingTo.text}
+        <ReplyTo
+        text={replyingTo.text}
         user={storedusers[replyingTo.sentBy]}
-        onCancel={()=>setreplyingTo(null )}
+        onCancel={()=>setReplyingTo(null)}
         />
       }
-
      </ImageBackground>
      <View style={styles.inputContiner}>
   <TouchableOpacity style={styles.tachable} onPress={(console.log('prsee'))}>

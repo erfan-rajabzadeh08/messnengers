@@ -32,16 +32,16 @@ const MenuItem=props=>{
     </MenuOption>
 }
 const Bubble=props=>{
-const {text,type,messageId,chatId,userId,date,setReply,replyingTo}=props;
+const {text,type,messageId,chatId,userId,date,setReply,replyingTo,name}=props;
 const starredMessages=useSelector(state=>state.messages.starredMessages[chatId]??{})
-console.log(starredMessages);
+const storedusers=useSelector(state=>state.users.storedusers)
 const bubblestyle={...styles.container}
 const wrapperstyle={...styles.wrapperstyle}
 const textstyle={...styles.text}
 const menuRef=useRef(null);
 const id=useRef(uuid.v4());
 
-const dateString=formatAmPm(date)
+const dateString=date && formatAmPm(date)
 let Container=View;
 let isUsermessage=false;
 switch (type) {
@@ -67,7 +67,10 @@ switch (type) {
         Container=TouchableWithoutFeedback;
         isUsermessage=true
     break;
-
+    case "reply":
+    bubblestyle.backgroundColor='#f2f2f2'
+   
+    break;
     default:
         break;
 }
@@ -77,17 +80,29 @@ const copyToClipboard =  text => {
 
 
   const isStared=isUsermessage && starredMessages[messageId] !==undefined;
-
-return(
+  const replyingToUser=replyingTo && storedusers[replyingTo.sentBy];
+  return(
     <View style={wrapperstyle}>
       <Container onLongPress={()=>menuRef.current.props.ctx.menuActions.openMenu(id.current)} style={{with:'100%'}}>
       <View style={bubblestyle}>
+
+      {
+       name &&
+       <Text style={styles.name}>{name}</Text>
+      }
+
+
+      {
+        replyingToUser &&
+        <Bubble
+        type='reply'
+        text={replyingTo.text}
+        name={`${replyingToUser.firstname} ${replyingToUser.lastname}`}
+        />
+      }
         <Text style={textstyle}>
             {text}
         </Text>
-
-
-
    {
   dateString && <View style={styles.timeContinear}>
         {isStared && <FontAwesome6 name='star-of-david' size={14} color='#000' style={{marginRight:7  }} />}
@@ -154,6 +169,9 @@ const styles=StyleSheet.create({
     time:{
       color:color.gray,
       fontSize:13
+    },
+    name:{
+      fontSize:11
     }
 
 
