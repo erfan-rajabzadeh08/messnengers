@@ -25,7 +25,7 @@ export const createchat=async(loggedinuserid,chatdata)=>{
 
 }
 
-export const sendTextMessage=async(chatId,senderId,messageText)=>{
+export const sendTextMessage=async(chatId,senderId,messageText,ReplyTo)=>{
     const app=getfirebaseapp()
     const dbRef=ref(getDatabase())
     const messagesRef=child(dbRef,`messages/${chatId}`);
@@ -36,6 +36,12 @@ export const sendTextMessage=async(chatId,senderId,messageText)=>{
         sentAt:new Date().toISOString(),
         text:messageText
     }
+
+    if(ReplyTo){
+       messageData.ReplyTo=ReplyTo
+    }
+
+
   await  push(messagesRef,messageData);
 
   const chatRef=child(dbRef,`chat/${chatId}`);

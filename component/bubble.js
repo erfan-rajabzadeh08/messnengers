@@ -32,7 +32,7 @@ const MenuItem=props=>{
     </MenuOption>
 }
 const Bubble=props=>{
-const {text,type,messageId,chatId,userId,date}=props;
+const {text,type,messageId,chatId,userId,date,setReply,replyingTo}=props;
 const starredMessages=useSelector(state=>state.messages.starredMessages[chatId]??{})
 console.log(starredMessages);
 const bubblestyle={...styles.container}
@@ -102,6 +102,7 @@ return(
         <MenuOptions>
             <MenuItem text="Copy To Clipboard" icon={"copy"} onSelect={()=>copyToClipboard(text)}/>
             <MenuItem text={`${isStared ? 'Unstar':'Star'} message`} icon={ isStared ?"star":"star-of-david"} onSelect={()=>starMessage(messageId,chatId,userId)}/>
+            <MenuItem text='Reply' icon={"reply"} onSelect={setReply}/>
 
 
         </MenuOptions>
