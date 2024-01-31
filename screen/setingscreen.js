@@ -78,7 +78,6 @@ const [formState,dispatchFormstate]=useReducer(reducer,initialStats);
    <ScrollView contentContainerStyle={styles.formContiner}>
 
     <ProrileImage size={80} userId={userdata.userId} uri={userdata.profilePicture} showeditbutton={true} />
-
     <Input label="firstname"   autoFocus={true}  icon='user' id="firstname"
     onInputchange={inputChangeHandeler}
     texterorr={formState.inputValidities["firstname"]}
