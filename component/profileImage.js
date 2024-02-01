@@ -248,7 +248,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePicker from "react-native-image-crop-picker";
 import { androidcameraPermission, uplodimageAsync } from "./permissions";
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-
 import color from '../constants/color';
 
 const ProfileImage = (props) => {
@@ -261,7 +260,7 @@ const ProfileImage = (props) => {
 
   const loadProfileImage = async (userId) => {
     try {
-      const savedImage = await AsyncStorage.getItem(`profileImage_${userId}`);
+      const savedImage = await AsyncStorage.getItem(`profileImage ${userId}`);
       if (savedImage) {
         setimage(JSON.parse(savedImage));
       }
@@ -272,7 +271,7 @@ const ProfileImage = (props) => {
 
   const saveProfileImage = async (downloadURL) => {
     try {
-      await AsyncStorage.setItem(`profileImage_${userId}`, JSON.stringify({ uri: downloadURL }));
+      await AsyncStorage.setItem(`profileImage ${userId}`, JSON.stringify({ uri: downloadURL }));
     } catch (error) {
       console.error('Error saving profile image to AsyncStorage:', error);
     }

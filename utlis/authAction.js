@@ -67,9 +67,9 @@ export const signIn=(email,password)=>{
 
 export const userlogout= ()=>{
    return async dispatch=>{
-      AsyncStorage.clear();
+      await AsyncStorage.removeItem("useData");
       clearTimeout(timer);
-       dispatch(logout())
+      dispatch(logout())
    }
 }
 
