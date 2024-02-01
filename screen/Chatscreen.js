@@ -9,6 +9,9 @@ import PageContuinear from '../component/PageContinear';
  import Bubble from '../component/bubble';
 import { createchat, sendTextMessage } from '../utlis/chatactions';
 import ReplyTo from '../component/ReplyTo';
+import { androidcameraPermission } from '../component/permissions';
+import { launchImageLibrary } from 'react-native-image-picker';
+
 const Chatscreen = (props) => {
 
     const[chatusers,setchatusers]=useState([])
@@ -19,6 +22,7 @@ const Chatscreen = (props) => {
     const userdata=useSelector(state=>state.auth.userdata);
     const storedusers=useSelector(state=>state.users.storedusers );
     const storedchats=useSelector(state=>state.chat.chatsdata)
+    const[tempImageUri,setTempImageUri ]=useState("");
     const chatMessages=useSelector(state=>{
     if(!chatId)return [];
     const chatMessagesData=state.messages.messagesData[chatId]
@@ -72,6 +76,19 @@ const Chatscreen = (props) => {
     setmassgetext("");
     setReplyingTo(null);
     },[massegetext,chatId])
+
+    const ImagePickers=useCallback(async ()=>{
+try {
+    const tempUri=await launchImageLibrary()
+    if(!tempUri) return;
+     setTempImageUri(tempUri);
+
+} catch (error) {
+console.log(error);
+}
+    },[tempImageUri])
+
+
     return (
         <SafeAreaView
     edges={['left','right','bottom']}
@@ -122,7 +139,7 @@ const Chatscreen = (props) => {
       }
      </ImageBackground>
      <View style={styles.inputContiner}>
-  <TouchableOpacity style={styles.tachable} onPress={(console.log('prsee'))}>
+  <TouchableOpacity style={styles.tachable} onPress={ImagePickers}>
   <FontAwesome6 name={'plus'} size={24} color={"#3498d1"}  />
   </TouchableOpacity>
 

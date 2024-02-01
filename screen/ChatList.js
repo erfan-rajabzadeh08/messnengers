@@ -54,6 +54,7 @@ return <PageContuinear>
 const titel=`${otheruser.firstname} ${otheruser.lastname}`
 const subtitle=chatdata.lastestMessageText || "New Chat"
 const image=otheruser.profilepicure
+console.log(image);
   return <Dataitem
     titel={titel}
     subtitel={subtitle}

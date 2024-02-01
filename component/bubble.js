@@ -69,7 +69,7 @@ switch (type) {
     break;
     case "reply":
     bubblestyle.backgroundColor='#f2f2f2'
-   
+
     break;
     default:
         break;
