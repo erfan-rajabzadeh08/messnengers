@@ -3,7 +3,7 @@ import { View,Text,StyleSheet, Button, TouchableOpacity, FlatList } from 'react-
 import { HeaderButton, Item } from 'react-navigation-header-buttons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import color from '../constants/color';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Dataitem from '../component/dataitem';
 import PageContuinear from '../component/PageContinear';
 
@@ -19,7 +19,7 @@ return Object.values(chatsdata).sort((a,b)=>{
 
 });
 
-
+const dispatch = useDispatch()
  useEffect(()=>{
   if(!selecteduser){
     return;
@@ -32,7 +32,7 @@ return Object.values(chatsdata).sort((a,b)=>{
   }
 
  props.navigation.navigate("Chatscreen",navigationprops);
-
+ dispatch({ type: 'CLEAR_CHAT_DATA' });
  },[props.route?.params])
 
 
@@ -53,12 +53,13 @@ return <PageContuinear>
   if(!otheruser)return;
 const titel=`${otheruser.firstname} ${otheruser.lastname}`
 const subtitle=chatdata.lastestMessageText || "New Chat"
-const image=otheruser.profilepicure
-console.log(image);
-  return <Dataitem
+const image=otheruser.profilePicture
+/* console.log(image);
+ */  return <Dataitem
     titel={titel}
     subtitel={subtitle}
     image={image}
+
     onPress={() => props.navigation.navigate("Chatscreen",{chatId})}
   />
   }}

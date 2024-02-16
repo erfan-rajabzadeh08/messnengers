@@ -250,6 +250,7 @@ import { androidcameraPermission, uplodimageAsync } from "./permissions";
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 import color from '../constants/color';
+import { updatesignedInUserData } from "../utlis/authAction";
 
 const ProfileImage = (props) => {
   const { userId, size, showeditbutton } = props;
@@ -273,6 +274,8 @@ const ProfileImage = (props) => {
   const saveProfileImage = async (downloadURL) => {
     try {
       await AsyncStorage.setItem(`profileImage_${userId}`, JSON.stringify({ uri: downloadURL }));
+      const newData = { profilePicture: downloadURL };
+      await updatesignedInUserData(userId, newData);
     } catch (error) {
       console.error('Error saving profile image to AsyncStorage:', error);
     }
